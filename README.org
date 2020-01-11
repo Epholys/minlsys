@@ -1,0 +1,51 @@
+** minlsys: a fast, tiny and unix-like derivation engine for L-Systems
+
+This program is a tiny implementation of D0L L-System's grammar derivation.
+
+*** Features
+
+- 83 lines of commented C89 code
+- Read a L-System description on stdin and output the derivation on stdout
+- The only heap allocation are done by the only standard library functions used:
+  - correct input: =scanf= and =putc= (on glibc 2.2.5, 4,096B and 1,024B respectively)
+  - wrong input: =scanf= and =fputs= (on glibc 2.2.5, 4,096B and 0B respectively)
+- Fast! 76 millions of characters derived in 486ms (on i7-7500U @ 2.70GHz)
+
+*** Limitations
+
+- Authorized "characters" are all 256 1-Byte values (so all of ASCII and more)
+- Axiom has a maximum size of 256 characters
+- 256 rules of 256 characters maximum
+
+*** File format:
+
+_First line_: number of iterations (=int= scanned by =scanf=). If wrong, will exit with error code -1 and a message on stderr.
+
+_Second line_: axiom.
+
+_Rest_: 1 rule per line: first character is the predecessor, second character is ignored, rest of the line is the successor. Empty line are ignored
+
+Example:
+
+#+BEGIN_SRC
+12
+Z
+Z F[-Y][+Y]FZ
+Y Y[+X][-X]F[Y]
+X F[+X][-F-X]F[+X][-X]
+#+END_SRC
+
+*** (Un)Robustness
+
+Robustness:
+
+- In compilation, no warnings or errors with =-Wall -Wextra -Werror= with =gcc= or =clang=.
+- No crashes found, even with =/dev/urandom= input file.
+- No memory leaks found, tested with =valgrind=.
+- Number of iteration is checked to be an integer with =scanf=.
+
+Unrobustness:
+
+- If duplicated rule, only the last one is conserved.
+- If the maximum size of 256 is not respected for the axiom or rules, the result derivation will not make any sense.
+- Recursive implementation: stack may overflow for high value of iterations.
