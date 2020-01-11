@@ -27,13 +27,13 @@ _Rest_: 1 rule per line: first character is the predecessor, second character is
 
 Example:
 
-===
+#+BEGIN_SRC
 12
 Z
 Z F[-Y][+Y]FZ
 Y Y[+X][-X]F[Y]
 X F[+X][-F-X]F[+X][-X]
-===
+#+END_SRC
 
 *** (Un)Robustness
 
